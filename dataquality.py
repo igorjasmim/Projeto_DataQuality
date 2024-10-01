@@ -21,6 +21,7 @@ class DataQuality:
     7. Missing Values Summary
     8. Numeric Columns
     9. Outlier Summary
+    10. General Info
     """
     
     def check_nulls(self):
@@ -101,6 +102,17 @@ class DataQuality:
         outliers = ((self.numeric_cols() < (Q1 - 1.5 * IQR)) | (self.numeric_cols() > (Q3 + 1.5 * IQR))).sum()
         print("Summary  of Outliers by Column:")
         print(outliers[outliers > 0])
+    
+        
+    def general_info(self):
+        """
+        General info.
+        """
+        print("General info:")
+        print(self.df.info())
+        
+
+
         
     # ----------------------------------------//---------------------------------------- #
     """
@@ -108,6 +120,9 @@ class DataQuality:
     1. Plot nulls
     2. Plot Data Distribution
     3. Plot BoxPlot
+    4. Correlation Matrix
+    5. Temporal Analysis
+    6. Plot Numeric Distribution
     """
     
     def plot_nulls(self):
@@ -180,19 +195,123 @@ class DataQuality:
     
     def correlation_matrix(self):
         """
-        Plota uma matriz de correlação para as colunas numéricas.
+        Plots a correlation matrix for the numeric columns.
         """
         # Table of numeric columns:
         numeric_df = self.numeric_cols()
         
         # Check the existence of numeric columns:
         if numeric_df.empty:
-            print("Não há colunas numéricas no DataFrame para calcular a correlação.")
+            print("There are no numeric columns in the DataFrame to calculate correlation.")
             return
         
         # Plot the Correlation Matrix:
         plt.figure(figsize=(10, 8))
         sns.heatmap(numeric_df.corr(), annot=True, cmap='coolwarm', fmt=".2f")
-        plt.title('Matriz de Correlação')
+        plt.title('Correlation Matrix')
         plt.show()
     
+    def temporal_analysis(self):
+        datetime_cols = self.df.select_dtypes(include=['datetime64[ns]'])
+        for col in datetime_cols.columns:
+            self.df.set_index(col).resample('M').size().plot()
+            plt.title(f'Frequency over time in {col}')
+            plt.show()
+            
+    def plot_numeric_dist(self):
+        print("Numeric Columns Distribution:")
+        numeric_cols = self.numeric_cols()
+        for col in numeric_cols.columns:
+            plt.figure(figsize=(20, 5))
+            sns.histplot(self.df[col], kde=True, bins=30, color='red')
+            plt.title(f'Distribution {col}')
+            plt.show()
+            
+    
+    # ----------------------------------------//---------------------------------------- #
+    """
+    General Report
+    """
+    def general_report(self):
+        
+        # Check null values:
+        self.check_nulls()
+        print("\nNull values for column:")
+        print(self.check_nulls())
+        print(" // ".center(100,"-"))
+        print("\n")
+        
+        # Check duplicated lines:
+        print(f"\nDuplicated lines: {self.check_duplicates()}")
+        print(" // ".center(100,"-"))
+        print("\n")
+        
+        # Check numeric columns:
+        # print("\nNumeric columns:")
+        # self.check_numeric_cols()
+        # print(" // ".center(100,"-"))
+        # print("\n")
+        
+        # Check Data Types:
+        print("\nData Types:")
+        print(self.check_data_types())
+        print(" // ".center(100,"-"))
+        print("\n")
+        
+        # Check Unique Values:
+        print("\nUnique Values:")
+        print(self.check_unique_values())
+        print(" // ".center(100,"-"))
+        print("\n")
+        
+        # Check Describe Data:
+        print("\nDescribe Data:")
+        print(self.describe_data())
+        print(" // ".center(100,"-"))
+        print("\n")
+        
+        # Missing Values Summary:
+        print("\nMissing Values:")
+        print(self.missing_values_summary())
+        print(" // ".center(100,"-"))
+        print("\n")
+        
+        # Numeric Columns:
+        print(self.numeric_cols())
+        print(" // ".center(100,"-"))
+        print("\n")
+        
+        # Outlier Summary:
+        print(self.outlier_summary())
+        print(" // ".center(100,"-"))
+        print("\n")
+        
+        # General Information:
+        print(self.general_info())
+        print(" // ".center(100,"-"))
+        print("\n")
+        
+        self.plot_nulls()
+        print(" // ".center(100,"-"))
+        print("\n")
+        
+        self.plot_data_distribution()
+        print(" // ".center(100,"-"))
+        print("\n")
+        
+        self.plot_boxplot()
+        print(" // ".center(100,"-"))
+        print("\n")
+        
+        self.correlation_matrix()
+        print(" // ".center(100,"-"))
+        print("\n")
+        
+        self.temporal_analysis()
+        print(" // ".center(100,"-"))
+        print("\n")
+        
+        self.plot_numeric_dist()
+        print(" // ".center(100,"-"))
+        print("\n")
+        
