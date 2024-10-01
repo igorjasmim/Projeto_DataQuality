@@ -18,3 +18,6 @@ E, usando do módulo desenvolvido, fazer uma análise de um dataset escolhido no
 - Histórico no github;
 - Entrega no 30/09 -> link do github
 
+Módulo desenvolvido em Python: **dataquality.py**
+Análise desenvolvida em Jupyter Notebook: **Projeto_DQ.ipynb**
+Exemplo de DataSet: **[Forbes_Richest_Atheletes_1990_2020.csv]**(https://github.com/igorjasmim/Projeto_DataQuality/blob/main/Forbes_Richest_Atheletes_1990_2020.csv)
